@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  .form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+  }
+  .form-box {
+    background: #fff;
+    padding: 20px 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  .form-box h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .form-box input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    font-size: 15px;
+  }
+  .form-box button {
+    width: 100%;
+    padding: 10px;
+    background-color: #ad0f0f;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .form-box button:hover {
+    background-color: #ff0000;
+  }
+</style>
+
+<div class="form-container">
+  <form method="POST" class="form-box">
+    <h2>Cadastrar Funcionário</h2>
+    <input type="text" name="name" placeholder="Nome" required>
+    <input type="text" name="cpf" id="cpf" placeholder="CPF" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Senha" required>
+    <input type="text" name="phone" id="phone" placeholder="Telefone" required>
+    <input type="date" name="birthdate" placeholder="Data de Nascimento" required>
+    <input type="text" name="position" placeholder="Cargo" required>
+    <input type="number" step="0.01" name="salary" placeholder="Salário" required>
+    <input type="text" name="access_key" placeholder="Chave de Acesso" required>
+    <button type="submit">Cadastrar</button>
+  </form>
+</div>
+
+
+{% endblock %}
