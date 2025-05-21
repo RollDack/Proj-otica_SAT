@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Carrinho de Compras</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% if items %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Produto</th>
+          <th>Preço</th>
+          <th>Quantidade</th>
+          <th>Subtotal</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.product.name }}</td>
+          <td>R$ {{ '%.2f'|format(item.product.price) }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>R$ {{ '%.2f'|format(item.subtotal) }}</td>
+          <td>
+            <a href="{{ url_for('cart.remove_from_cart', product_id=item.product.id) }}" class="btn btn-danger btn-sm">Remover</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h4>Total: R$ {{ '%.2f'|format(total) }}</h4>
+    <form method="POST" action="{{ url_for('sales.checkout') }}">
+      <button type="submit" class="btn btn-success">Finalizar Compra</button>
+    </form>
+  {% else %}
+    <p>Seu carrinho está vazio.</p>
+  {% endif %}
+</div>
+{% endblock %}

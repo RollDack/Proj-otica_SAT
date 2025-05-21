@@ -16,11 +16,15 @@ def create_app():
     from app.routes.products import products_bp
     from app.routes.sales import sales_bp
     from app.routes.employees import employee_bp
+    from app.routes.catalog import catalog_bp
+    from app.routes.cart import cart_bp
 
     app.register_blueprint(home_bp)
     app.register_blueprint(customers_bp, url_prefix='/customers')
     app.register_blueprint(products_bp, url_prefix='/products')
     app.register_blueprint(sales_bp, url_prefix='/sales')
     app.register_blueprint(employee_bp, url_prefix='/employee')
+    app.register_blueprint(catalog_bp, url_prefix='/catalog')
+    app.register_blueprint(cart_bp, url_prefix='/cart')
 
     return app
