@@ -1,5 +1,6 @@
 from app import db
 from sqlalchemy.orm import validates
+from datetime import datetime
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -43,6 +44,22 @@ class Employee(db.Model):
 class Sale(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=True)
     quantity = db.Column(db.Integer, nullable=False)
     total_price = db.Column(db.Float, nullable=False)
     date = db.Column(db.DateTime, nullable=False)
+    status = db.Column(db.String(100), nullable=True)
+
+class Order(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    total = db.Column(db.Float, nullable=False)
+    items = db.relationship('OrderItem', backref='order', lazy=True, cascade="all, delete-orphan")
+
+class OrderItem(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+    subtotal = db.Column(db.Float, nullable=False)
+    product = db.relationship('Product')        

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Recibo da Compra</h2>
+
+  <p>Data da Compra: {{ now.strftime('%d/%m/%Y %H:%M') }}</p>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Produto</th>
+        <th>Quantidade</th>
+        <th>Preço Unitário</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in summary %}
+      <tr>
+        <td>{{ item.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>R$ {{ '%.2f'|format(item.price) }}</td>
+        <td>R$ {{ '%.2f'|format(item.subtotal) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h4>Total da Compra: R$ {{ '%.2f'|format(total) }}</h4>
+  <a href="{{ url_for('catalog.show_catalog') }}" class="btn btn-primary mt-3">Voltar ao Catálogo</a>
+</div>
+{% endblock %}

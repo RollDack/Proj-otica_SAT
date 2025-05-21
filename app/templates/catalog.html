@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Catálogo de Produtos</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="row">
+    {% for product in products %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text">Preço: R$ {{ '%.2f'|format(product.price) }}</p>
+          <p class="card-text">Estoque: {{ product.stock }}</p>
+          {% if product.stock > 0 %}
+            <form method="POST" action="{{ url_for('cart.add_to_cart') }}">
+              <input type="hidden" name="product_id" value="{{ product.id }}">
+              <div class="input-group">
+                <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control">
+                <button type="submit" class="btn btn-success">Adicionar ao Carrinho</button>
+              </div>
+            </form>
+          {% else %}
+            <span class="badge bg-danger">Indisponível</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
