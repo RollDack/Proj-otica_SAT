@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/appointments.css') }}">
+<div class="container mt-4">
+  <h2>Consultas Agendadas</h2>
+  <p>Este sistema permite agendar consultas com nossos oftalmologistas parceiros ou técnicos especializados para serviços de ajuste e revisão de lentes.</p>
+  <a href="{{ url_for('appointments.create_appointment') }}">Agendar Nova Consulta</a>
+</div>
+
+<div class="container mt-5">
+  {% for appt in appointments %}
+  <div class="appointment-card" onclick="toggleDetails('details-{{ appt.id }}')">
+    <div class="summary">
+      <strong>Consulta #{{ appt.id }}</strong> - {{ appt.date.strftime('%d/%m/%Y %H:%M') }} - {{ appt.type }}
+    </div>
+    <div class="details" id="details-{{ appt.id }}" style="display: none;">
+      <p><strong>Tipo:</strong> {{ appt.type }}</p>
+      <p><strong>Cliente:</strong> {{ appt.customer.name if appt.customer else '-' }}</p>
+      <p><strong>Funcionário:</strong> {{ appt.employee.name if appt.employee else '-' }}</p>
+      <p><strong>Descrição:</strong> {{ appt.description }}</p>
+      <p><strong>Status:</strong> {{ appt.status }}</p>
+      {% if appt.status != 'Cancelada' %}
+      <form action="{{ url_for('appointments.cancel_appointment', appointment_id=appt.id) }}" method="post">
+        <button type="submit" class="btn btn-danger btn-sm">Cancelar</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+  function toggleDetails(id) {
+    const el = document.getElementById(id);
+    if (el.style.display === 'none') {
+      el.style.display = 'block';
+    } else {
+      el.style.display = 'none';
+    }
+  }
+</script>
+{% endblock %}

@@ -50,16 +50,15 @@ class Sale(db.Model):
     date = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.String(100), nullable=True)
 
-class Order(db.Model):
+class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-    total = db.Column(db.Float, nullable=False)
-    items = db.relationship('OrderItem', backref='order', lazy=True, cascade="all, delete-orphan")
+    customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=True)
+    employee_id = db.Column(db.Integer, db.ForeignKey('employee.id'), nullable=True)
+    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    description = db.Column(db.String(255), nullable=False)
+    type = db.Column(db.String(100), nullable=False)
+    status = db.Column(db.String(20), default='Pendente')
+    
 
-class OrderItem(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    order_id = db.Column(db.Integer, db.ForeignKey('order.id'), nullable=False)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    quantity = db.Column(db.Integer, nullable=False)
-    subtotal = db.Column(db.Float, nullable=False)
-    product = db.relationship('Product')        
+    customer = db.relationship('Customer', backref='appointments')
+    employee = db.relationship('Employee', backref='appointments')
