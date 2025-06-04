@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from datetime import datetime
 from app import db
-from app.models import Sale, Product
+from app.models import Sale, Product, InventoryLog
 
 sales_bp = Blueprint('sales', __name__)
 
@@ -84,8 +84,18 @@ def checkout():
 
         product.stock -= quantity
         total_price = product.price * quantity
+
         sale = Sale(product_id=product.id, quantity=quantity, total_price=total_price, date=datetime.utcnow())
-        db.session.add(sale)
+
+        log = InventoryLog(
+            product_id=product.id,
+            action='saida',
+            quantity=quantity,
+            date=datetime.utcnow(),
+            note='Venda realizada no checkout'
+        )
+
+        db.session.add_all([product, sale, log])
         total += total_price
 
         summary.append({
@@ -97,4 +107,10 @@ def checkout():
 
     db.session.commit()
     session['cart'] = {}
-    return render_template('receipt.html', summary=summary, total=total, now=datetime.now())
+    flash("Compra finalizada com sucesso!", "success")
+    return redirect(url_for('sales.sale_summary'))
+
+@sales_bp.route('/summary')
+def sale_summary():
+    sales = Sale.query.order_by(Sale.date.desc()).all()
+    return render_template('sales.html', sales=sales)

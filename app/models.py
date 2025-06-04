@@ -50,6 +50,8 @@ class Sale(db.Model):
     date = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.String(100), nullable=True)
 
+    product = db.relationship("Product")
+
 class Appointment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.Integer, db.ForeignKey('customer.id'), nullable=True)
@@ -62,3 +64,13 @@ class Appointment(db.Model):
 
     customer = db.relationship('Customer', backref='appointments')
     employee = db.relationship('Employee', backref='appointments')
+
+class InventoryLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
+    action = db.Column(db.String(50), nullable=False)  # 'entrada', 'saida', 'ajuste'
+    quantity = db.Column(db.Integer, nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    note = db.Column(db.String(255))
+
+    product = db.relationship('Product', backref='inventory_logs')

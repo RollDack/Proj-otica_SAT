@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Histórico de Movimentações de Estoque</h2>
+
+  <div class="d-flex justify-content-between align-items-end mb-3">
+    <form method="GET" class="row gx-2 gy-1 align-items-end">
+      <div class="col-auto">
+        <label for="action_filter" class="form-label">Filtrar por Ação</label>
+        <select name="action" id="action_filter" class="form-control">
+          <option value="">Todas</option>
+          <option value="entrada">Entrada</option>
+          <option value="saida">Saída</option>
+          <option value="ajuste">Ajuste</option>
+        </select>
+      </div>
+      <div class="col-auto">
+        <label for="start_date" class="form-label">De:</label>
+        <input type="date" name="start" id="start_date" class="form-control">
+      </div>
+      <div class="col-auto">
+        <label for="end_date" class="form-label">Até:</label>
+        <input type="date" name="end" id="end_date" class="form-control">
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-secondary">Filtrar</button>
+      </div>
+    </form>
+    <a href="{{ url_for('stock.adjust_stock') }}" class="btn btn-primary">Nova Movimentação</a>
+  </div>
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Produto</th>
+        <th>Ação</th>
+        <th>Quantidade</th>
+        <th>Observação</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in logs %}
+      <tr class="{% if log.action == 'entrada' %}table-success{% elif log.action == 'saida' %}table-danger{% elif log.action == 'ajuste' %}table-warning{% endif %}">
+        <td>{{ log.date.strftime('%d/%m/%Y %H:%M') }}</td>
+        <td>{{ log.product.name }}</td>
+        <td>{{ log.action }}</td>
+        <td>{{ log.quantity }}</td>
+        <td>{{ log.note or '-' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
