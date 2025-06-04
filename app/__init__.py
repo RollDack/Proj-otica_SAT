@@ -18,6 +18,8 @@ def create_app():
     from app.routes.employees import employee_bp
     from app.routes.catalog import catalog_bp
     from app.routes.cart import cart_bp
+    from app.routes.appointments import appointments_bp
+    from app.routes.stock import stock_bp
 
     app.register_blueprint(home_bp)
     app.register_blueprint(customers_bp, url_prefix='/customers')
@@ -26,5 +28,7 @@ def create_app():
     app.register_blueprint(employee_bp, url_prefix='/employee')
     app.register_blueprint(catalog_bp, url_prefix='/catalog')
     app.register_blueprint(cart_bp, url_prefix='/cart')
+    app.register_blueprint(appointments_bp, url_prefix='/appointments')
+    app.register_blueprint(stock_bp, url_prefix='/stock')
 
     return app

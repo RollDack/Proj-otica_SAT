@@ -1,0 +1,18 @@
+.appointment-card {
+  border: 1px solid #ffffff;
+  border-left: 5px solid red;
+  background-color: #f1eeee;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(255, 255, 255, 0.05);
+}
+
+.appointment-card h5 {
+  font-weight: bold;
+  color: rgb(0, 0, 0);
+}
+
+.appointment-card p {
+  margin: 0.2rem 0;
+  font-size: 0.95rem;
+}

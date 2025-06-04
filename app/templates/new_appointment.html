@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/appointments.css') }}">
+<div class="container mt-4">
+  <h2>Agendar Nova Consulta</h2>
+
+  <form method="POST" action="{{ url_for('appointments.create_appointment') }}" id="appointmentForm">
+    <div class="card appointment-card mb-3">
+      <label for="type" class="form-label">Tipo de agendamento</label>
+      <select name="type" id="type" class="form-control" required>
+        <option value="">Selecione...</option>
+        <option value="Ajuste de óculos">Ajuste de óculos</option>
+        <option value="Troca de lentes">Troca de lentes</option>
+        <option value="Limpeza técnica">Limpeza técnica</option>
+        <option value="Exame de vista gratuito">Exame de vista gratuito</option>
+        <option value="Exame com desconto">Exame com desconto</option>
+      </select>
+    </div>
+
+    <div class="card appointment-card mb-3">
+      <label for="date" class="form-label">Data e Hora</label>
+      <input type="datetime-local" name="date" id="date" class="form-control" required>
+    </div>
+
+    <div class="card appointment-card mb-3">
+      <label for="description" class="form-label">Descrição</label>
+      <input type="text" name="description" id="description" class="form-control" required>
+    </div>
+
+    <div class="card appointment-card mb-3">
+      <label for="customer_id" class="form-label">Cliente</label>
+      <select name="customer_id" id="customer_id" class="form-control" required>
+        <option value="">Selecione...</option>
+        {% for customer in customers %}
+          <option value="{{ customer.id }}">{{ customer.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="card appointment-card mb-3">
+      <label for="employee_id" class="form-label">Funcionário</label>
+      <select name="employee_id" id="employee_id" class="form-control" required>
+        <option value="">Selecione...</option>
+        {% for employee in employees %}
+          <option value="{{ employee.id }}">{{ employee.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Agendar Consulta</button>
+    <a href="{{ url_for('appointments.list_appointments') }}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+
+<script>
+  document.getElementById("appointmentForm").addEventListener("submit", function (event) {
+    const type = document.getElementById("type").value;
+    const date = document.getElementById("date").value;
+    const description = document.getElementById("description").value.trim();
+
+    if (!type || !date || !description) {
+      event.preventDefault();
+      alert("Por favor, preencha todos os campos obrigatórios corretamente.");
+    }
+  });
+</script>
+
+{% set appointments = appointments or [] %}
+<div class="container mt-5">
+  <h2>Consultas Agendadas</h2>
+  {% for appt in appointments %}
+  <div class="appointment-card">
+    <div class="appointment-summary" onclick="toggleDetails('{{ appt.id }}')">
+      <strong>#{{ appt.id }}</strong> - {{ appt.date.strftime('%d/%m/%Y %H:%M') }} - {{ appt.type }}
+    </div>
+    <div class="appointment-details" id="details-{{ appt.id }}" style="display: none;">
+      <p><strong>Cliente:</strong> {{ appt.customer.name if appt.customer else '-' }}</p>
+      <p><strong>Funcionário:</strong> {{ appt.employee.name if appt.employee else '-' }}</p>
+      <p><strong>Descrição:</strong> {{ appt.description }}</p>
+      <p><strong>Status:</strong> {{ appt.status }}</p>
+      {% if appt.status != 'Cancelada' %}
+      <form action="{{ url_for('appointments.cancel_appointment', appointment_id=appt.id) }}" method="post">
+        <button type="submit" class="btn btn-danger btn-sm">Cancelar</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+function toggleDetails(id) {
+  const details = document.getElementById("details-" + id);
+  details.style.display = details.style.display === "none" ? "block" : "none";
+}
+</script>
+{% endblock %}
